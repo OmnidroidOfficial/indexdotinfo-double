@@ -1,0 +1,51 @@
+namespace indexdotinfo
+{
+    public class Reading
+    {
+      public static int Bookmark { get; set; } = 0;
+      public static int BookmarkIndex { get; set; } = 1;
+      private static Stopwatch MsgTimer { get; set; } = Stopwatch.StartNew();
+      public static int CountMessagesToRead { get; set; } = 0;
+      public static string? ChtApproach { get; set; }
+
+       static public void NewReading()
+       {
+         MsgTimer.Start();
+         BookmarkIndex = SessionMessages.Count();
+         CountMessagesToRead = BookmarkIndex - Bookmark;
+        
+         if (MsgTimer.ElapsedMilliseconds > 1000)
+          {
+            MsgTimer.Stop();
+            MsgTimer.Reset();
+            StartReading();
+            Chat.Typing();
+          }
+       }
+
+      static public void StartReading()
+      {
+        Interpreter.Pending = "The Administrator has" + CountMessagesToRead + " messages to read.";
+    switch (ChtApproach)
+    {
+      case "Introductory":
+            Interpreter.Scenario = "A";
+            break;
+      case "Simple":
+            Interpreter.Scenario = "B";
+            break;
+        case "Advanced":
+            Interpreter.Scenario = "C";
+            break;
+        case "Custom":
+            Interpreter.Scenario = "D";
+            break;
+    }
+    Interpreter.InterpretMessage();
+}
+      static public void StopReading()
+      {
+        OutputBuilder.UpdateDirection();
+      }
+
+}
