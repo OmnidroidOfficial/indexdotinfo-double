@@ -1,0 +1,193 @@
+@page "/"
+@using System.Text;
+
+<PageTitle>Index</PageTitle>
+<div class="index-home">
+<h1>@TitleDate</h1>
+<h2>@TitleTime</h2>
+<p>Chat instructions.</p>
+
+@Interpreter.Pending
+</div>
+
+<div class="index-chat">
+    <div class="chat-box">
+        <div hidden="@showSuggestions" id="box-overlay"><p>suggestions</p></div>
+        <p>@Session.Alerts @Chat.MsgCount</p>
+        @foreach (var message in SessionMessages)
+        {
+            <div id="chat-message" style="align-self:@message.txtAlignSelf; text-align:@message.txtAlign;">
+                <p>@message.msgTimeStamp</p>
+                <p>@message.msgSender</p>
+                <p>@message.msgContent</p>
+            </div>
+        }
+    </div>
+    <div class="chat-navigation">
+    <div class="chat-input">
+        <input @bind="ChatInput" @bind:event="oninput" disabled="@Chat.IsTyping" @onkeyup="@SendReturn"/>
+        <button class="btn-primary" @onclick="@SndMessage">send</button>
+    </div>
+    <div class="chat-management">
+        <button class="btn-primary" hidden="@HideStart" @onclick="@StartSession">Start Session</button>
+        <button class="btn-primary" hidden="@HideEnd" @onclick="@EndSession">End Session</button>
+        <button class="btn-primary" @onclick="@UpdateTxt">Direct Update</button>
+        <button class="btn-primary" @onclick="@Suggestions">Chat Suggestions</button>
+        <button class="btn-primary" @onclick="@HideSuggestions">Hide Suggestions</button>
+    </div>
+    </div>
+</div>
+
+@code {
+    public bool HideStart { get; set; } = false;
+    public bool HideEnd { get; set; } = true;
+    public bool showSuggestions { get; set; } = true;
+    public string ChatInput { get; set; } = "";
+    public string TitleDate { get; set; } = DateTime.Now.ToString(format: "D");
+    public string TitleTime { get; set; } = DateTime.Now.ToString(format: "HH:mm (hh:mm tt)");
+
+    protected override void OnInitialized()
+    {
+        Title.PageName = "Regentesse.info";
+    }
+
+    private void SendReturn(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter")
+        {
+            SndMessage();
+        }
+    }
+
+    public class Chat
+    {
+        public static int MsgCount { get; set; } = 0;
+        public static string MsgIncomingTxt { get; set; } = "";
+        public static bool? MessagesIncoming { get; set; }
+        public static bool? IsTyping { get; set; }
+        static public void NewMessage()
+        {
+            SessionMessages.Add(new Message(Session.NowTxtTime, "The Administrator", MsgIncomingTxt, "end", "right"));
+            Interpreter.MessagesReceived++;
+        }
+
+        static public void ReadMessage()
+        {
+            Reading.MessagesToRead = SessionMessages.GetRange(Reading.Bookmark, Reading.CountMessagesToRead);
+        }
+
+        static public void CountMessages()
+        {
+            MsgCount = SessionMessages.Count();
+        }
+
+        static public void Typing()
+        {
+            if (MessagesIncoming == true)
+            {
+                IsTyping = true;
+                Interpreter.Pending = "The Administrator is typing...";
+            }
+            if (MessagesIncoming == false)
+            {
+                IsTyping = false;
+            }
+        }
+    }
+
+    public class Message
+    {
+        public Message(string txtTimeStamp, string txtSender, string txtContent, string txt_alignself, string txt_align)
+        {
+            msgTimeStamp = txtTimeStamp;
+            msgSender = txtSender;
+            msgContent = txtContent;
+            txtAlignSelf = txt_alignself;
+            txtAlign = txt_align;
+        }
+
+        public string msgTimeStamp { get; set; }
+        public string msgSender { get; set; }
+        public string msgContent { get; set; }
+        public string txtAlignSelf { get; set; }
+        public string txtAlign { get; set; }
+    }
+
+    public static List<Message> SessionMessages = new List<Message>() {};
+
+    void SndMessage()
+    {
+        if (Session.IsSessionActive == true)
+        {
+            SessionMessages.Add(new Message(Session.NowTxtTime, "Guest", ChatInput, "start", "left"));
+            Chat.MessagesIncoming = false;
+            Interpreter.MessagesSent++;
+          //  Chat.MsgCount = SessionMessages.Count();
+            Interpreter.NewInterpretation();
+            ChatInput = "";
+        }
+        if (Session.IsSessionActive == false)
+        {
+            Session.Alerts = "Please start a session.";
+        }
+    }
+
+    void StartSession()
+    {
+        HideStart = true;
+        HideEnd = false;
+        SessionMessages.Clear();
+        Chat.MsgCount = 0;
+        Session.IsSessionActive = true;
+        Interpreter.NewInterpreter();
+        SessionMessages.Add(new Message(Session.NowTxtTime, "The Administrator", "Welcome to Regentesse.info.", "end", "right"));
+        Session.Alerts = "A new session has been initiated.";
+        OutputBuilder.NewOutputBuilder();
+    }
+
+    void EndSession()
+    {
+        HideStart = false;
+        HideEnd = true;
+        Session.IsSessionActive = false;
+        Session.Alerts = "Your session is ended.";
+        Interpreter.MessagesSent = 0;
+        Interpreter.MessagesReceived = 0;
+  //      OutputBuilder.OutputReview();
+    }
+
+    void UpdateTxt()
+    {
+        ChatInput = "[Direct Update]";
+        SndMessage();
+        CurrentQuestion();
+    }
+
+    void Suggestions()
+    {
+        showSuggestions = false;
+    }
+
+    void HideSuggestions()
+    {
+        showSuggestions = true;
+    }
+
+    void CurrentQuestion()
+    {
+        if (Session.IsSessionActive == true)
+        {
+            SessionMessages.Add(new Message(Session.NowTxtTime, "The Administrator", "This is the most relevant.", "end", "right"));
+            Chat.MessagesIncoming = true;
+            Interpreter.MessagesReceived++;
+        }
+        // report current question
+    }
+
+    void SuggestedInput()
+    {
+        ChatInput = "[Suggested Input]";
+        Reading.ChtState = 4; 
+        // report suggestion
+    }
+}
