@@ -7,6 +7,8 @@ namespace indexdotinfo
 {
     public class Interpreter
     {
+        public static int? MessagesSent { get; set; }
+        public static int? MessagesReceived { get; set; }
         public static string? Pending { get; set; }
         public static bool? Affirmative { get; set; } = false;
         public static string? Scenario { get; set; }
