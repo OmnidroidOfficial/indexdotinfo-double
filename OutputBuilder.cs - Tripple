@@ -1,0 +1,43 @@
+using Microsoft.AspNetCore.Components.Forms;
+using System;
+using static indexdotinfo.Pages.Index;
+
+namespace indexdotinfo
+{
+    public class OutputBuilder
+    {
+      public static int Attempts { get; set; } = 0;
+      public static string? Output { get; set; }
+
+      public class OutputStreamLine
+        {
+            public OutputStreamLine(string lineOut)
+            {
+                StreamLine = lineOut;
+            }
+            public string? StreamLine { get; set; }
+        }
+
+        private static readonly List<OutputStreamLine> AgrOutput = new();
+
+      static public void NewOutputBuilder()
+        {
+            Attempts = 0;
+        }
+
+      static private void CreateOutput()
+      {
+          // new line in StreamLine w/ChtX. -> SubmitOutput();
+      }
+
+      static public void SubmitOutput()
+        {
+            foreach (var LineOut in AgrOutput!)
+            {
+                Output = LineOut.StreamLine!;
+                Chat.MsgIncomingTxt = Output;
+                Chat.NewMessage();
+            }
+            Attempts++;
+        }
+}
