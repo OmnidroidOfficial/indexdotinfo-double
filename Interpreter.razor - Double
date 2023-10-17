@@ -1,0 +1,99 @@
+using Microsoft.AspNetCore.Components.Forms;
+using System.Net.NetworkInformation;
+using System.Text;
+using static indexdotinfo.Pages.Index;
+
+namespace indexdotinfo
+{
+    public class Interpreter
+    {
+        public static int? MessagesSent { get; set; }
+        public static int? MessagesReceived { get; set; }
+        public static string? Pending { get; set; }
+        public static bool? Affirmative { get; set; } = false;
+        public static string? Scenario { get; set; }
+        public static Char[]? ForInterpretation { get; set; }
+        public static int OutputModule { get; set; } = 0;
+        public static List<Line> LinesToRead { get; set; } = new List<Line>() { };
+        public static string? ToInterpret { get; set; }
+        public static Array? Trigger { get; set; }
+ //       public static bool? StateOne { get; set; } = false;
+   //     public static bool? StateTwo { get; set; } = false;
+     //   public static bool? StateThree { get; set; } = false;
+       // public static bool? StateFour { get; set; } = false;
+     //   public static bool? StateFive { get; set; } = false;
+        public static string ChtIncoming { get; set; } = "incoming";
+        public static string ChtOutgoing { get; set; } = "outgoing";
+        public static int ChtCountSuggestions { get; set; } = 0;
+
+        // new interpretation
+        // get session
+        // moment in structure of interpretation (accuracy)
+        // report 
+
+        public class Line
+        {
+            public Line(string aLine)
+            {
+                AsLine = aLine;
+            }
+            public string? AsLine { get; set; }
+        }
+
+        static public void NewInterpreter()
+        {
+            Reading.ReadIndex = 0;
+            ChtCountSuggestions = 0;
+            // empty chat log (review)
+        }
+        static public void NewInterpretation()
+        {
+            if (Reading.ReadIndex == 0)
+            {
+      //          Reading.ChtState = 1;
+                Chat.MsgIncomingTxt = "Introductory approach.";
+                Chat.NewMessage();
+                Reading.ChtApproach = "Introductory";
+            }
+            Pending = "The Administrator awaits your response.";
+            Chat.CountMessages();
+            Chat.MessagesIncoming = false;
+            Reading.NewReading();
+        }
+
+        static public void InterpretMessage()
+        {
+            Chat.ReadMessage();
+           // var ToRead = new List<Message>;
+           // for (int i = 0; i <= Reading.MessagesToRead!.Count; i++) 
+           // {
+            //    foreach (var ToRead in Reading.MessagesToRead!)
+        //    {
+        //      ForInterpretation = ToRead.msgContent.ToCharArray(0, 30);
+        //     LinesToRead.Add(new Line(ForInterpretation!.ToString()!)) ;
+         // }
+           // }
+         //   //     
+            // LinesToRead.Reverse();
+            //   ToInterpret = LinesToRead.ToString();
+
+                 ModuleZero();
+      }
+
+            static private void ModuleZero()
+         {
+    //        bool InComparison = ToInterpret!.Contains("Hello.");
+   //        int InComparisonIndex = ToInterpret!.IndexOf("Hello.");
+         // if (InComparison == true)
+        //{
+          //SessionMessages.Add(new Message(Session.NowTxtTime, "The Administrator", "Woooow.", "end", "right"));
+        ////  }
+         //else
+         //{
+           // SessionMessages.Add(new Message(Session.NowTxtTime, "The Administrator", "Oké." + ForInterpretation, "end", "right"));
+         // }
+
+                    OutputBuilder.NewOutput();
+              }
+    }
+}
