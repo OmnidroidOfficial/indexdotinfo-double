@@ -1,0 +1,120 @@
+using static chatdotindex.Pages.Index;
+using System.Diagnostics;
+using static chatdotindex.Interpreter;
+using chatdotindex;
+
+namespace chatdotindex
+{
+    public class Reading
+    {
+        public static int Bookmark { get; set; } = 0;
+        public static int BookmarkIndex { get; set; } = 1;
+        private static Stopwatch MsgTimer { get; set; } = Stopwatch.StartNew();
+        public static List<Message>? IsReading { get; set; } = new List<Message>() { };
+        public static int ReadIndex { get; set; } = 0;
+        public static string? ChtSubject { get; set; }
+        public static string? ChtModus { get; set; }
+        public static string? ChtX { get; set; }
+        public static string? ChtY { get; set; }
+        public static string? ChtZ { get; set; }
+        public static string? ToConfirm { get; set; }
+        public static string? ChtVisitor { get; set; }
+        public static string? ChtQuestion { get; set; }
+        public static int CountMessagesToRead { get; set; } = 0;
+
+        static public void Read()
+        {
+            Session.Pending = "The Administrator awaits your response.";
+            if (MsgTimer.IsRunning == false)
+            {
+                MsgTimer.Reset();
+                MsgTimer.Start();
+                StartReading();
+            }
+            else
+            {
+                StartReading();
+            }
+        }
+
+        static public void StartReading()
+        {
+            BookmarkIndex = Session.SessionMessages.Count();
+            CountMessagesToRead = BookmarkIndex - Bookmark;
+            if (MsgTimer.ElapsedMilliseconds > 3000)
+            {
+                MsgTimer.Stop();
+                StopReading();
+                NewReading();
+            }
+            if (CountMessagesToRead == 3)
+            {
+                MsgTimer.Stop();
+                StopReading();
+                NewReading();
+            }
+        }
+        static public void NewReading()
+        {
+            Session.Pending = "The Administrator is reading your response.";
+            Chat.Processing = true;
+            Chat.InProgress();
+
+            if (ReadIndex == 0)
+            {
+                SortReading();
+                Interpreter.NewInterpretation();
+            }
+            else
+            {
+                Interpreter.NewInterpretation();
+            }
+        }
+        static public void StopReading()
+        {
+            IsReading = Session.SessionMessages.GetRange(Bookmark, CountMessagesToRead);
+            if (IsReading != null)
+            {
+                foreach (var ToRead in IsReading)
+                {
+                    Interpreter.ForInterpretation = ToRead.msgContent;
+                    Interpreter.LinesToRead.Add(new Line(Interpreter.ForInterpretation));
+                }
+            }
+
+        }
+        static public void SortReading()
+        {
+                switch (OutputBuilder.ChtApproach)
+                {
+                    case "Introductory":
+                        ChtSubject = "introductory";
+                        ChtModus = "initiate";
+                        ChtZ = "to" + ChtY;
+                        ReadIndex = 3;
+                        break;
+                    case "Simple":
+                        ChtSubject = "simple approach to finding an answer";
+                        ChtModus = "as simple as possible";
+                        ChtZ = "to find";
+                        ReadIndex = 1;
+                        break;
+                    case "Advanced":
+                        ChtSubject = "advanced approach to finding an answer";
+                        ChtModus = "in detail";
+                        ChtZ = "to define";
+                        ChtQuestion = "If";
+                        ReadIndex = 1;
+                        break;
+                    case "Custom":
+                        ChtSubject = "custom approach to this chat";
+                        ChtModus = "custom";
+                        ChtZ = "to" + ChtY;
+                        ChtQuestion = "If";
+                        ReadIndex = 1;
+                        break;
+                }
+         }
+
+    }
+}
