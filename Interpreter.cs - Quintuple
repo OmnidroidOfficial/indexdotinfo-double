@@ -1,0 +1,230 @@
+using Microsoft.AspNetCore.Components.Forms;
+using System.Net.NetworkInformation;
+using System.Text;
+using static chatdotindex.OutputBuilder;
+using static chatdotindex.Pages.Index;
+
+namespace chatdotindex
+{
+    public class Interpreter
+    {
+        public static int MessagesSent { get; set; } = 0;
+        public static int MessagesReceived { get; set; } = 0;
+        public static bool? Affirmative { get; set; } = false;
+        public static bool? UseIncentives { get; set; } = false;
+        public static bool? UseContext { get; set; } = false;
+        public static bool? UsePreset { get; set; } = false;
+        public static bool? Present { get; set; }
+        public static string? Scenario { get; set; }
+        public static string? ForInterpretation { get; set; }
+        public static int Module { get; set; } = 0;
+        public static List<Line> LinesToRead { get; set; } = new List<Line>() { };
+        public static string? ToInterpret { get; set; }
+        public static string[]? Incentives { get; set; }
+        public static string? Lines { get; set; }
+        public static char[]? Sub1 { get; set; }
+        public static char[]? Sub2 { get; set; }
+        public static char[]? Sub3 { get; set; }
+        public static char[]? Sub4 { get; set; }
+        public static char[]? Sub5 { get; set; }
+        public static char[]? Sub6 { get; set; }
+        public static char[]? Sub7 { get; set; }
+        public static char[]? Sub8 { get; set; }
+        public static char[]? Sub9 { get; set; }
+        public static char[]? Sub10 { get; set; }
+        public static char[]? Sub11 { get; set; }
+
+        public class Line
+        {
+            public Line(string aLine)
+            {
+                AsLine = aLine;
+            }
+            public string? AsLine { get; set; }
+        }
+
+        static public void NewInterpreter()
+        {
+            if (OutputBuilder.Attempts == 0)
+            {
+                OutputBuilder.ChtApproach = "Introductory";
+                UseIncentives = false;
+                UseContext = true;
+                Scenario = "A";
+            }
+            else
+            {
+                Session.SessionMessages.Add(new Message(Session.NowTxtTime, "The Administrator", "New session, new context.", "end", "right"));
+                MessagesSent = 0;
+                MessagesReceived = 0;
+                OutputBuilder.Attempts = 0;
+            }
+        }
+        static public void NewInterpretation()
+        {
+            Session.Pending = "The Administrator has" + Reading.CountMessagesToRead + " messages to read.";
+
+            if (UseIncentives == true)
+            {
+                Incentive();
+            }
+            if (UseContext == true)
+            {
+                Context();
+
+                //new line in StreamLine w/ChtX. -> SubmitOutput();
+            }
+            if (UsePreset == true)
+            {
+                Preset();
+            }
+
+            OutputBuilder.CreateOutput();
+        }
+
+        static private void Incentive()
+        {
+           // string[] Incentives = { "hello", "yes", "no", "confirm", "repeat", "x is", "y is", "z is", "correct", "correction", "actually"};
+            Lines = LinesToRead.ToString()!;
+            if (Lines.Contains("hello")) 
+            { 
+                int pos1 = Lines.IndexOf("nothello");
+                if (pos1 >= 0)
+                {
+                    Sub1 = Lines.ToCharArray(pos1, +10);
+                }
+            }
+            if (Lines.Contains("yes"))
+            {
+                int pos2 = Lines.IndexOf("yes");
+                if (pos2 >= 0)
+                {
+                    Sub2 = Lines.ToCharArray(pos2 -3, +14);
+                }
+            }
+            if (Lines.Contains("no"))
+            {
+                int pos3 = Lines.IndexOf("no");
+                if (pos3 >= 0)
+                {
+                    Sub3 = Lines.ToCharArray(pos3 -2, +13);
+                }
+            }
+            if (Lines.Contains("confirm"))
+            {
+                int pos4 = Lines.IndexOf("confirm");
+                if (pos4 >= 0)
+                {
+                    Sub4 = Lines.ToCharArray(pos4 -7, +18);
+                }
+            }
+            if (Lines.Contains("repeat"))
+            {
+                int pos5 = Lines.IndexOf("repeat");
+                if (pos5 >= 0)
+                {
+                    Sub5 = Lines.ToCharArray(pos5 -6, +17);
+                }
+            }
+            if (Lines.Contains("x is"))
+            {
+                int pos6 = Lines.IndexOf("x is");
+                if (pos6 >= 0)
+                {
+                    Sub6 = Lines.ToCharArray(pos6 -4, +15);
+                }
+            }
+            if (Lines.Contains("y is"))
+            {
+                int pos7 = Lines.IndexOf("y is");
+                if (pos7 >= 0)
+                {
+                    Sub7 = Lines.ToCharArray(pos7 -4, +15);
+                }
+            }
+            if (Lines.Contains("z is"))
+            {
+                int pos8 = Lines.IndexOf("z is");
+                if (pos8 >= 0)
+                {
+                    Sub8 = Lines.ToCharArray(pos8 -4, +15);
+                }
+            }
+            if (Lines.Contains("correct"))
+            {
+                int pos9 = Lines.IndexOf("correct");
+                if (pos9 >= 0)
+                {
+                    Sub9 = Lines.ToCharArray(pos9 -7, +18);
+                }
+            }
+            if (Lines.Contains("correction"))
+            {
+                int pos10 = Lines.IndexOf("correction");
+                if (pos10 >= 0)
+                {
+                    Sub10 = Lines.ToCharArray(pos10 -10, +21);
+                }
+            }
+            if (Lines.Contains("actually"))
+            {
+                int pos11 = Lines.IndexOf("actually");
+                if (pos11 >= 0)
+                {
+                    Sub11 = Lines.ToCharArray(pos11 -8, +28);
+                }
+            }
+       //     if (Reading.ReadIndex == 3)
+         //   {
+           //     Reading.StopReading();
+           // }
+          //  else
+           // {
+            //    OutputBuilder.ForTheRecord();
+           // }
+        }
+
+        static private void Context()
+        {
+            Lines = LinesToRead.ToString()!;
+            if (Module == 1)
+            {
+                if (Lines.Contains("simple"))
+                {
+                    OutputBuilder.ChtApproach = "Simple";
+                    Scenario = "B";
+                    Module = 0;
+                }
+                if (Lines.Contains("advanced"))
+                {
+                    OutputBuilder.ChtApproach = "Advanced";
+                    Scenario = "C";
+                    Module = 0;
+                }
+                if (Lines.Contains("custom"))
+                {
+                    OutputBuilder.ChtApproach = "Custom";
+                    Scenario = "D";
+                    Module = 0;
+                }
+                else
+                {
+                    Scenario = "D";
+                    Module = 0;
+                }
+            }
+            if (Module == 2)
+            {
+                if (Interpreter.Lines!.Contains("Affirmative"))
+                {
+                    Reading.ReadIndex = 3;
+                }
+            }
+        }
+
+        static private void Preset()
+        {
+
+        }
+    }
+}
