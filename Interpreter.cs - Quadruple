@@ -1,0 +1,166 @@
+using Microsoft.AspNetCore.Components.Forms;
+using System.Net.NetworkInformation;
+using System.Text;
+using static chatdotindex.Pages.Index;
+
+namespace chatdotindex
+{
+    public class Interpreter
+    {
+        public static int? MessagesSent { get; set; }
+        public static int? MessagesReceived { get; set; }
+        public static bool? Affirmative { get; set; } = false;
+        public static bool? Present { get; set; }
+        public static string? Scenario { get; set; }
+        public static string? ForInterpretation { get; set; }
+        public static int OutputModule { get; set; } = 0;
+        public static List<Line> LinesToRead { get; set; } = new List<Line>() { };
+        public static string? ToInterpret { get; set; }
+        public static string[]? Incentives { get; set; }
+        public static string? Lines { get; set; }
+        public static char[]? Sub1 { get; set; }
+        public static char[]? Sub2 { get; set; }
+        public static char[]? Sub3 { get; set; }
+        public static char[]? Sub4 { get; set; }
+        public static char[]? Sub5 { get; set; }
+        public static char[]? Sub6 { get; set; }
+        public static char[]? Sub7 { get; set; }
+        public static char[]? Sub8 { get; set; }
+        public static char[]? Sub9 { get; set; }
+        public static char[]? Sub10 { get; set; }
+        public static char[]? Sub11 { get; set; }
+
+        public class Line
+        {
+            public Line(string aLine)
+            {
+                AsLine = aLine;
+            }
+            public string? AsLine { get; set; }
+        }
+
+        static public void NewInterpreter()
+        {
+            if (OutputBuilder.Attempts == 0)
+            {
+                OutputBuilder.ChtApproach = "Introductory";
+            }
+        }
+        static public void NewInterpretation()
+        {
+            if (Reading.IsReading != null)
+            {
+                foreach (var ToRead in Reading.IsReading)
+                {
+                    ForInterpretation = ToRead.msgContent;
+                    LinesToRead.Add(new Line(ForInterpretation));
+                }
+            }
+            Incentive();
+        }
+
+        static private void Incentive()
+        {
+           // string[] Incentives = { "hello", "yes", "no", "confirm", "repeat", "x is", "y is", "z is", "correct", "correction", "actually"};
+            Lines = LinesToRead.ToString()!;
+            if (Lines.Contains("hello")) 
+            { 
+                int pos1 = Lines.IndexOf("hello");
+                if (pos1 >= 0)
+                {
+                    Sub1 = Lines.ToCharArray(pos1, +10);
+                }
+            }
+            if (Lines.Contains("yes"))
+            {
+                int pos2 = Lines.IndexOf("yes");
+                if (pos2 >= 0)
+                {
+                    Sub2 = Lines.ToCharArray(pos2, +10);
+                }
+            }
+            if (Lines.Contains("no"))
+            {
+                int pos3 = Lines.IndexOf("no");
+                if (pos3 >= 0)
+                {
+                    Sub3 = Lines.ToCharArray(pos3, +10);
+                }
+            }
+            if (Lines.Contains("confirm"))
+            {
+                int pos4 = Lines.IndexOf("confirm");
+                if (pos4 >= 0)
+                {
+                    Sub4 = Lines.ToCharArray(pos4, +10);
+                }
+            }
+            if (Lines.Contains("repeat"))
+            {
+                int pos5 = Lines.IndexOf("repeat");
+                if (pos5 >= 0)
+                {
+                    Sub5 = Lines.ToCharArray(pos5, +10);
+                }
+            }
+            if (Lines.Contains("x is"))
+            {
+                int pos6 = Lines.IndexOf("x is");
+                if (pos6 >= 0)
+                {
+                    Sub6 = Lines.ToCharArray(pos6, +10);
+                }
+            }
+            if (Lines.Contains("y is"))
+            {
+                int pos7 = Lines.IndexOf("y is");
+                if (pos7 >= 0)
+                {
+                    Sub7 = Lines.ToCharArray(pos7, +10);
+                }
+            }
+            if (Lines.Contains("z is"))
+            {
+                int pos8 = Lines.IndexOf("z is");
+                if (pos8 >= 0)
+                {
+                    Sub8 = Lines.ToCharArray(pos8, +10);
+                }
+            }
+            if (Lines.Contains("correct"))
+            {
+                int pos9 = Lines.IndexOf("correct");
+                if (pos9 >= 0)
+                {
+                    Sub9 = Lines.ToCharArray(pos9, +10);
+                }
+            }
+            if (Lines.Contains("correction"))
+            {
+                int pos10 = Lines.IndexOf("correction");
+                if (pos10 >= 0)
+                {
+                    Sub10 = Lines.ToCharArray(pos10, +10);
+                }
+            }
+            if (Lines.Contains("actually"))
+            {
+                int pos11 = Lines.IndexOf("actually");
+                if (pos11 >= 0)
+                {
+                    Sub11 = Lines.ToCharArray(pos11 -10, +20);
+                }
+            }
+
+            if (Reading.ReadIndex == 3)
+            {
+                Reading.StopReading();
+            }
+            else
+            {
+                OutputBuilder.ForTheRecord();
+            }
+        }
+
+    }
+}
