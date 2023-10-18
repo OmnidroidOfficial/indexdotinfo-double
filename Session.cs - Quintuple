@@ -1,0 +1,16 @@
+using static chatdotindex.Pages.Index;
+//sprry it is named chatdotindex x_x
+namespace chatdotindex
+{
+    public class Session
+    {
+        public static bool IsSessionActive { get; set; } = false;
+        public static string? Alerts { get; set; }
+        public static string? Pending { get; set; }
+ //       public static string TxtSessionState { get; set; } = "inactive";
+        public static string NowTxtTime { get; set; } = DateTime.Now.ToString(format: "HH:mm (hh:mm tt)");
+        public string? NowTxtDate { get; set; }
+        public static List<Message> SessionMessages = new();
+
+    }
+}
